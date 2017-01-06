@@ -2,6 +2,10 @@
 
 ReactSiema is a lightweight carousel plugin for React. It's a wrapper based on decent library [Siema](https://github.com/pawelgrzybek/siema).
 
+## Demo
+
+- [ReactSiema](https://kaveckas.github.io/react-siema/)
+
 ## Setup
 
 ```
