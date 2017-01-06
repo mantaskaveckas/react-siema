@@ -7,11 +7,6 @@ class ReactSiema extends Component {
         'onTouchStart', 'onTouchEnd', 'onTouchMove', 'onMouseDown', 'onMouseUp', 'onMouseLeave', 'onMouseMove'
     ];
 
-    /**
-     *
-     * @param props
-     * @constructor
-     */
     constructor(props) {
         super();
         this.config = Object.assign({}, {
