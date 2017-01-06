@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactSiema from './ReactSiema';
+import ReactSiema from './lib/ReactSiema';
 import logo from './logo.svg';
 import './App.css';
 

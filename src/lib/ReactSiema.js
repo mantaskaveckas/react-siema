@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-
-const transformProperty = (() => {
-    const { transform } = document.documentElement.style;
-    if (typeof transform === 'string') {
-        return 'transform';
-    }
-    return 'WebkitTransform';
-})();
+import debounce from './utils/debounce';
+import transformProperty from './utils/transformProperty';
 
 class ReactSiema extends Component {
     events = [
         'onTouchStart', 'onTouchEnd', 'onTouchMove', 'onMouseDown', 'onMouseUp', 'onMouseLeave', 'onMouseMove'
     ];
 
+    /**
+     *
+     * @param props
+     * @constructor
+     */
     constructor(props) {
         super();
         this.config = Object.assign({}, {
+            resizeDebounce: 250,
             duration: 200,
             easing: 'ease-out',
             perPage: 1,
@@ -36,10 +36,10 @@ class ReactSiema extends Component {
 
         this.init();
 
-        this.onResize = () => {
+        this.onResize = debounce(() => {
             this.resize();
             this.slideToCurrent();
-        };
+        }, this.config.resizeDebounce);
 
         window.addEventListener('resize', this.onResize);
 
@@ -93,7 +93,7 @@ class ReactSiema extends Component {
             this.perPage = this.config.perPage;
         } else if (typeof this.config.perPage === 'object') {
             this.perPage = 1;
-            for (const viewport in this.config.perPage) {
+            for (let viewport in this.config.perPage) {
                 if (window.innerWidth > viewport) {
                     this.perPage = this.config.perPage[viewport];
                 }
