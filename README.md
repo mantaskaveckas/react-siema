@@ -87,7 +87,7 @@ const App = () => {
                 <Slide src="#" />
                 <Slide src="#" />
             </ReactSiema>
-            <button onClick={() => slider.prev()}>next</button>
+            <button onClick={() => slider.prev()}>prev</button>
             <button onClick={() => slider.next()}>next</button>
         </div>
     )
