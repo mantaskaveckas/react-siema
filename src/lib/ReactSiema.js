@@ -18,10 +18,6 @@ class ReactSiema extends Component {
         ])
     };
 
-    events = [
-        'onTouchStart', 'onTouchEnd', 'onTouchMove', 'onMouseDown', 'onMouseUp', 'onMouseLeave', 'onMouseMove'
-    ];
-
     constructor(props) {
         super();
         this.config = Object.assign({}, {
@@ -35,13 +31,12 @@ class ReactSiema extends Component {
             loop: false,
         }, props);
 
-        this.events.forEach((handler) => {
-            this[handler] = this[handler].bind(this);
-        });
+        this.handleDragStart = this.handleDragStart.bind(this);
+        this.handleDragMove = this.handleDragMove.bind(this);
+        this.handleDragEnd = this.handleDragEnd.bind(this);
     }
 
     componentDidMount() {
-        this.config.selector = this.selector;
         this.currentSlide = this.config.startIndex;
 
         this.init();
@@ -170,63 +165,19 @@ class ReactSiema extends Component {
         });
     }
 
-    onTouchStart(e) {
-        e.stopPropagation();
-        this.pointerDown = true;
-        this.drag.start = e.touches[0].pageX;
-    }
-
-    onTouchEnd(e) {
-        e.stopPropagation();
-        this.pointerDown = false;
-        this.setStyle(this.sliderFrame, {
-            webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-            transition: `all ${this.config.duration}ms ${this.config.easing}`
-        });
-        if (this.drag.end) {
-            this.updateAfterDrag();
-        }
-        this.clearDrag();
-    }
-
-    onTouchMove(e) {
-        e.stopPropagation();
-        if (this.pointerDown) {
-            this.drag.end = e.touches[0].pageX;
-
-            this.setStyle(this.sliderFrame, {
-                webkitTransition: `all 0ms ${this.config.easing}`,
-                transition: `all 0ms ${this.config.easing}`,
-                [transformProperty]: `translate3d(${(this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1}px, 0, 0)`
-            });
-        }
-    }
-
-    onMouseDown(e) {
+    handleDragStart(e) {
         e.preventDefault();
         e.stopPropagation();
         this.pointerDown = true;
-        this.drag.start = e.pageX;
+        const event = (e.touches && e.touches[0]) || e;
+        this.drag.start = event.pageX;
     }
 
-    onMouseUp(e) {
-        e.stopPropagation();
-        this.pointerDown = false;
-        this.setStyle(this.sliderFrame, {
-            cursor: '-webkit-grab',
-            webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-            transition: `all ${this.config.duration}ms ${this.config.easing}`
-        });
-        if (this.drag.end) {
-            this.updateAfterDrag();
-        }
-        this.clearDrag();
-    }
-
-    onMouseMove(e) {
+    handleDragMove(e) {
         e.preventDefault();
         if (this.pointerDown) {
-            this.drag.end = e.pageX;
+            const event = (e.touches && e.touches[0]) || e;
+            this.drag.end = event.pageX;
             this.setStyle(this.sliderFrame, {
                 cursor: '-webkit-grabbing',
                 webkitTransition: `all 0ms ${this.config.easing}`,
@@ -236,26 +187,37 @@ class ReactSiema extends Component {
         }
     }
 
-    onMouseLeave(e) {
-        if (this.pointerDown) {
-            this.pointerDown = false;
-            this.drag.end = e.pageX;
-            this.setStyle(this.sliderFrame, {
-                cursor: '-webkit-grab',
-                webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-                transition: `all ${this.config.duration}ms ${this.config.easing}`
-            });
-            this.updateAfterDrag();
-            this.clearDrag();
-        }
+    handleDragEnd(e) {
+      if (this.pointerDown) {
+          this.pointerDown = false;
+          const event = (e.touches && e.touches[0]) || e;
+          this.drag.end = event.pageX;
+          this.setStyle(this.sliderFrame, {
+              cursor: '-webkit-grab',
+              webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
+              transition: `all ${this.config.duration}ms ${this.config.easing}`
+          });
+          this.updateAfterDrag();
+          this.clearDrag();
+      }
     }
 
     render() {
+        const eventHandlers = {
+            onTouchStart: this.handleDragStart,
+            onTouchMove: this.handleDragMove,
+            onTouchEnd: this.handleDragEnd,
+            onMouseDown: this.handleDragStart,
+            onMouseMove: this.handleDragMove,
+            onMouseUp: this.handleDragEnd,
+            onMouseLeave: this.handleDragEnd,
+        };
+
         return (
             <div
                 ref={(selector) => this.selector = selector}
                 style={{ overflow: 'hidden' }}
-                {...this.events.reduce((props, event) => Object.assign({}, props, { [event]: this[event] }), {})}
+                {...eventHandlers}
             >
                 <div ref={(sliderFrame) => this.sliderFrame = sliderFrame}>
                     {React.Children.map(this.props.children, (children, index) =>
