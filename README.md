@@ -8,7 +8,7 @@ ReactSiema is a lightweight carousel plugin for React. It's a wrapper based on d
 
 ## Download on npm
 
-- [ReactSiema package on npm] https://www.npmjs.com/package/react-siema
+- [ReactSiema package on npm](https://www.npmjs.com/package/react-siema)
 
 ## Setup
 
