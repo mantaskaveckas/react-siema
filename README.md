@@ -6,6 +6,10 @@ ReactSiema is a lightweight carousel plugin for React. It's a wrapper based on d
 
 - [ReactSiema](https://kaveckas.github.io/react-siema/)
 
+## Download on npm
+
+- [ReactSiema package on npm] https://www.npmjs.com/package/react-siema
+
 ## Setup
 
 ```
@@ -31,7 +35,7 @@ If you want to run a demo:
 
 ## Options
 
-Component comes with some default settings, that can be adjusted vie props.
+Component comes with some default settings, that can be adjusted via props.
 
 ```
 resizeDebounce: 250
