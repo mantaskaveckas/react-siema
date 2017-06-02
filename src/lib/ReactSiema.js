@@ -135,7 +135,7 @@ class ReactSiema extends Component {
     }
 
     slideToCurrent() {
-        this.sliderFrame.style[transformProperty] = `translate3d(-${this.currentSlide * (this.selectorWidth / this.perPage)}px, 0, 0)`;
+        this.sliderFrame.style[transformProperty] = `translate3d(-${Math.round(this.currentSlide * (this.selectorWidth / this.perPage))}px, 0, 0)`;
     }
 
     updateAfterDrag() {

@@ -166,7 +166,7 @@ var ReactSiema = function (_Component) {
     }, {
         key: 'slideToCurrent',
         value: function slideToCurrent() {
-            this.sliderFrame.style[_transformProperty2.default] = 'translate3d(-' + this.currentSlide * (this.selectorWidth / this.perPage) + 'px, 0, 0)';
+            this.sliderFrame.style[_transformProperty2.default] = 'translate3d(-' + Math.round(this.currentSlide * (this.selectorWidth / this.perPage)) + 'px, 0, 0)';
         }
     }, {
         key: 'updateAfterDrag',
