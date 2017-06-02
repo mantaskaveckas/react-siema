@@ -15,7 +15,9 @@ class ReactSiema extends Component {
         children: PropTypes.oneOfType([
             PropTypes.element,
             PropTypes.arrayOf(PropTypes.element)
-        ])
+        ]),
+        onInit: PropTypes.func,
+        onChange: PropTypes.func,
     };
 
     events = [
@@ -33,6 +35,8 @@ class ReactSiema extends Component {
             draggable: true,
             threshold: 20,
             loop: false,
+            onInit: () => {},
+            onChange: () => {},
         }, props);
 
         this.events.forEach((handler) => {
@@ -88,6 +92,7 @@ class ReactSiema extends Component {
         }
 
         this.slideToCurrent();
+        this.config.onInit.call(this);
     }
 
     setSelectorWidth() {
@@ -118,6 +123,7 @@ class ReactSiema extends Component {
             this.currentSlide = Math.max(this.currentSlide - 1, 0);
         }
         this.slideToCurrent();
+        this.config.onChange.call(this);
     }
 
     next() {
@@ -127,11 +133,13 @@ class ReactSiema extends Component {
             this.currentSlide = Math.min(this.currentSlide + 1, this.innerElements.length - this.perPage);
         }
         this.slideToCurrent();
+        this.config.onChange.call(this);
     }
 
     goTo(index) {
         this.currentSlide = Math.min(Math.max(index, 0), this.innerElements.length - 1);
         this.slideToCurrent();
+        this.config.onChange.call(this);
     }
 
     slideToCurrent() {
