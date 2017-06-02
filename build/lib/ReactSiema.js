@@ -48,7 +48,9 @@ var ReactSiema = function (_Component) {
             startIndex: 0,
             draggable: true,
             threshold: 20,
-            loop: false
+            loop: false,
+            onInit: function onInit() {},
+            onChange: function onChange() {}
         }, props);
 
         _this.events.forEach(function (handler) {
@@ -112,6 +114,7 @@ var ReactSiema = function (_Component) {
             }
 
             this.slideToCurrent();
+            this.config.onInit.call(this);
         }
     }, {
         key: 'setSelectorWidth',
@@ -146,6 +149,7 @@ var ReactSiema = function (_Component) {
                 this.currentSlide = Math.max(this.currentSlide - 1, 0);
             }
             this.slideToCurrent();
+            this.config.onChange.call(this);
         }
     }, {
         key: 'next',
@@ -156,12 +160,14 @@ var ReactSiema = function (_Component) {
                 this.currentSlide = Math.min(this.currentSlide + 1, this.innerElements.length - this.perPage);
             }
             this.slideToCurrent();
+            this.config.onChange.call(this);
         }
     }, {
         key: 'goTo',
         value: function goTo(index) {
             this.currentSlide = Math.min(Math.max(index, 0), this.innerElements.length - 1);
             this.slideToCurrent();
+            this.config.onChange.call(this);
         }
     }, {
         key: 'slideToCurrent',
@@ -332,6 +338,8 @@ ReactSiema.propTypes = {
     draggable: _react.PropTypes.bool,
     threshold: _react.PropTypes.number,
     loop: _react.PropTypes.bool,
-    children: _react.PropTypes.oneOfType([_react.PropTypes.element, _react.PropTypes.arrayOf(_react.PropTypes.element)])
+    children: _react.PropTypes.oneOfType([_react.PropTypes.element, _react.PropTypes.arrayOf(_react.PropTypes.element)]),
+    onInit: _react.PropTypes.func,
+    onChange: _react.PropTypes.func
 };
 exports.default = ReactSiema;
