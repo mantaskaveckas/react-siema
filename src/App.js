@@ -1,7 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent, Component } from 'react';
 import ReactSiema from './lib/ReactSiema';
 import logo from './logo.svg';
 import './App.css';
+
+class Item extends PureComponent {
+    render() {
+        return this.props.children;
+    }
+}
 
 class App extends Component {
     state = {
@@ -16,6 +22,10 @@ class App extends Component {
         ]
     };
 
+    handleSlideClick = (e) => {
+        console.log(`Slide clicked: ${this.siema.currentSlide}`)
+    }
+
     render() {
         return (
             <div className="App">
@@ -28,8 +38,12 @@ class App extends Component {
                         Lightweight and simple carousel wrapper for React based on awesome <a href="https://pawelgrzybek.com/siema/">Siema</a>.
                     </h4>
                     <div className="App-intro__slider">
-                        <ReactSiema ref={(siema) => this.siema = siema}>
-                            {this.state.slides.map((slide, index) => <div key={index}>{slide}</div>)}
+                        <ReactSiema ref={(siema) => this.siema = siema} onClick={ this.handleSlideClick }>
+                            { this.state.slides.map((slide, index) => {
+                                return (
+                                    <Item key={index}>{slide}</Item>
+                                )
+                            }) }
                         </ReactSiema>
                         <button onClick={() => this.siema.prev()}>Prev</button>
                         <button onClick={() => this.siema.next()}>Next</button>

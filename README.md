@@ -97,3 +97,38 @@ const App = () => {
     )
 }
 ```
+
+## Click Events
+
+This version of react-siema has been extended to include the ability to attach very simple click events to items passed into the slider. It will only fire the click event if the slide wasn't dragged.
+
+Provide a normal event handler method the `onClick` prop in `<ReactSiema>`. Current slide information can be retrieved from the instance of siema. (`this.slider.currentSlide` below).
+
+
+```
+const Slide = (props) => <img {...props} alt="slide" />
+
+class App extends Component {
+    constructor() {
+        this.slider = null;
+    }
+
+    handleClick = (e) => {
+        console.log(`Index of the clicked slide is ${this.slider.currentSlide}`);
+    }
+    
+    render() {
+        return (
+            <div>
+                <ReactSiema ref={siema => this.slider = siema} onClick={this.handleClick}>
+                    <Slide src="#" />
+                    <Slide src="#" />
+                    <Slide src="#" />
+                </ReactSiema>
+                <button onClick={() => slider.prev()}>prev</button>
+                <button onClick={() => slider.next()}>next</button>
+            </div>
+        )
+    }
+}
+```
