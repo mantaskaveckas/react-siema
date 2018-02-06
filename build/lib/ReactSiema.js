@@ -79,8 +79,10 @@ var ReactSiema = function (_Component) {
             if (this.config.draggable) {
                 this.pointerDown = false;
                 this.drag = {
-                    start: 0,
-                    end: 0
+                    startX: 0,
+                    endX: 0,
+                    startY: 0,
+                    letItGo: null
                 };
             }
         }
@@ -92,7 +94,7 @@ var ReactSiema = function (_Component) {
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            window.removeEventListener(this.onResize);
+            window.removeEventListener('resize', this.onResize);
         }
     }, {
         key: 'init',
@@ -177,7 +179,7 @@ var ReactSiema = function (_Component) {
     }, {
         key: 'updateAfterDrag',
         value: function updateAfterDrag() {
-            var movement = this.drag.end - this.drag.start;
+            var movement = this.drag.endX - this.drag.startX;
             if (movement > 0 && Math.abs(movement) > this.config.threshold) {
                 this.prev();
             } else if (movement < 0 && Math.abs(movement) > this.config.threshold) {
@@ -199,8 +201,10 @@ var ReactSiema = function (_Component) {
         key: 'clearDrag',
         value: function clearDrag() {
             this.drag = {
-                start: 0,
-                end: 0
+                startX: 0,
+                endX: 0,
+                startY: 0,
+                letItGo: null
             };
         }
     }, {
@@ -215,7 +219,8 @@ var ReactSiema = function (_Component) {
         value: function onTouchStart(e) {
             e.stopPropagation();
             this.pointerDown = true;
-            this.drag.start = e.touches[0].pageX;
+            this.drag.startX = e.touches[0].pageX;
+            this.drag.startY = e.touches[0].pageY;
         }
     }, {
         key: 'onTouchEnd',
@@ -226,7 +231,7 @@ var ReactSiema = function (_Component) {
                 webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
                 transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
             });
-            if (this.drag.end) {
+            if (this.drag.endX) {
                 this.updateAfterDrag();
             }
             this.clearDrag();
@@ -235,13 +240,18 @@ var ReactSiema = function (_Component) {
         key: 'onTouchMove',
         value: function onTouchMove(e) {
             e.stopPropagation();
-            if (this.pointerDown) {
-                this.drag.end = e.touches[0].pageX;
+
+            if (this.drag.letItGo === null) {
+                this.drag.letItGo = Math.abs(this.drag.startY - e.touches[0].pageY) < Math.abs(this.drag.startX - e.touches[0].pageX);
+            }
+
+            if (this.pointerDown && this.drag.letItGo) {
+                this.drag.endX = e.touches[0].pageX;
 
                 this.setStyle(this.sliderFrame, _defineProperty({
                     webkitTransition: 'all 0ms ' + this.config.easing,
                     transition: 'all 0ms ' + this.config.easing
-                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
+                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.startX - this.drag.endX)) * -1 + 'px, 0, 0)'));
             }
         }
     }, {
@@ -250,7 +260,7 @@ var ReactSiema = function (_Component) {
             e.preventDefault();
             e.stopPropagation();
             this.pointerDown = true;
-            this.drag.start = e.pageX;
+            this.drag.startX = e.pageX;
         }
     }, {
         key: 'onMouseUp',
@@ -262,7 +272,7 @@ var ReactSiema = function (_Component) {
                 webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
                 transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
             });
-            if (this.drag.end) {
+            if (this.drag.endX) {
                 this.updateAfterDrag();
             }
             this.clearDrag();
@@ -272,12 +282,12 @@ var ReactSiema = function (_Component) {
         value: function onMouseMove(e) {
             e.preventDefault();
             if (this.pointerDown) {
-                this.drag.end = e.pageX;
+                this.drag.endX = e.pageX;
                 this.setStyle(this.sliderFrame, _defineProperty({
                     cursor: '-webkit-grabbing',
                     webkitTransition: 'all 0ms ' + this.config.easing,
                     transition: 'all 0ms ' + this.config.easing
-                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
+                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.startX - this.drag.endX)) * -1 + 'px, 0, 0)'));
             }
         }
     }, {
@@ -285,7 +295,7 @@ var ReactSiema = function (_Component) {
         value: function onMouseLeave(e) {
             if (this.pointerDown) {
                 this.pointerDown = false;
-                this.drag.end = e.pageX;
+                this.drag.endX = e.pageX;
                 this.setStyle(this.sliderFrame, {
                     cursor: '-webkit-grab',
                     webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
