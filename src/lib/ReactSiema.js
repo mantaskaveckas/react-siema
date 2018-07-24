@@ -119,24 +119,32 @@ class ReactSiema extends Component {
         }
     }
 
-    prev() {
+    prev(n = 1, callback) {
         if (this.currentSlide === 0 && this.config.loop) {
             this.currentSlide = this.innerElements.length - this.perPage;
         } else {
-            this.currentSlide = Math.max(this.currentSlide - 1, 0);
+            this.currentSlide = Math.max(this.currentSlide - Number(n), 0);
         }
         this.slideToCurrent();
         this.config.onChange.call(this);
+        
+        if (typeof callback === 'function') {
+            callback();
+        }
     }
 
-    next() {
+    next(n = 1, callback) {
         if (this.currentSlide === this.innerElements.length - this.perPage && this.config.loop) {
             this.currentSlide = 0;
         } else {
-            this.currentSlide = Math.min(this.currentSlide + 1, this.innerElements.length - this.perPage);
+            this.currentSlide = Math.min(this.currentSlide + Number(n), this.innerElements.length - this.perPage);
         }
         this.slideToCurrent();
         this.config.onChange.call(this);
+
+        if (typeof callback === 'function') {
+            callback();
+        }
     }
 
     goTo(index) {
