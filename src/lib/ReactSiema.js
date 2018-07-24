@@ -21,7 +21,7 @@ class ReactSiema extends Component {
     };
 
     events = [
-        'onTouchStart', 'onTouchEnd', 'onTouchMove', 'onMouseDown', 'onMouseUp', 'onMouseLeave', 'onMouseMove'
+        'onTouchStart', 'onTouchEnd', 'onTouchMove', 'onMouseDown', 'onMouseUp', 'onMouseLeave', 'onMouseMove', 'onClick'
     ];
 
     constructor(props) {
@@ -215,6 +215,7 @@ class ReactSiema extends Component {
         e.stopPropagation();
         this.pointerDown = true;
         this.drag.start = e.pageX;
+        this.wasDragged = false;
     }
 
     onMouseUp(e) {
@@ -226,7 +227,9 @@ class ReactSiema extends Component {
             transition: `all ${this.config.duration}ms ${this.config.easing}`
         });
         if (this.drag.end) {
-            this.updateAfterDrag();
+           // If drag.end has a value > 0, the slider has been dragged
+           this.wasDragged = true;
+           this.updateAfterDrag();
         }
         this.clearDrag();
     }
@@ -258,6 +261,12 @@ class ReactSiema extends Component {
         }
     }
 
+    onClick(e) {
+        if (!this.wasDragged && this.props.onClick) {
+            this.props.onClick(e);
+        }
+    }
+
     render() {
         return (
             <div
@@ -269,7 +278,8 @@ class ReactSiema extends Component {
                     {React.Children.map(this.props.children, (children, index) =>
                         React.cloneElement(children, {
                             key: index,
-                            style: { float: 'left' }
+                            style: { float: 'left' },
+                            onClick: this.onClick,
                         })
                     )}
                 </div>
