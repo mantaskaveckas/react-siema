@@ -179,83 +179,96 @@ class ReactSiema extends Component {
     }
 
     onTouchStart(e) {
+      if (this.config.draggable) {
         e.stopPropagation();
         this.pointerDown = true;
         this.drag.start = e.touches[0].pageX;
+      }
     }
 
     onTouchEnd(e) {
+      if (this.config.draggable) {
         e.stopPropagation();
         this.pointerDown = false;
         this.setStyle(this.sliderFrame, {
-            webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-            transition: `all ${this.config.duration}ms ${this.config.easing}`
+          webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
+          transition: `all ${this.config.duration}ms ${this.config.easing}`
         });
         if (this.drag.end) {
-            this.updateAfterDrag();
+          this.updateAfterDrag();
         }
         this.clearDrag();
+      }
     }
 
     onTouchMove(e) {
+      if (this.config.draggable) {
         e.stopPropagation();
         if (this.pointerDown) {
-            this.drag.end = e.touches[0].pageX;
-
-            this.setStyle(this.sliderFrame, {
-                webkitTransition: `all 0ms ${this.config.easing}`,
-                transition: `all 0ms ${this.config.easing}`,
-                [transformProperty]: `translate3d(${(this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1}px, 0, 0)`
-            });
+          this.drag.end = e.touches[0].pageX;
+          this.setStyle(this.sliderFrame, {
+            webkitTransition: `all 0ms ${this.config.easing}`,
+            transition: `all 0ms ${this.config.easing}`,
+            [transformProperty]: `translate3d(${(this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1}px, 0, 0)`
+          });
         }
+      }
     }
 
     onMouseDown(e) {
+      if (this.config.draggable) {
         e.preventDefault();
         e.stopPropagation();
         this.pointerDown = true;
         this.drag.start = e.pageX;
+      }
     }
 
     onMouseUp(e) {
+      if (this.config.draggable) {
         e.stopPropagation();
         this.pointerDown = false;
         this.setStyle(this.sliderFrame, {
-            cursor: '-webkit-grab',
-            webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-            transition: `all ${this.config.duration}ms ${this.config.easing}`
+          cursor: '-webkit-grab',
+          webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
+          transition: `all ${this.config.duration}ms ${this.config.easing}`
         });
         if (this.drag.end) {
-            this.updateAfterDrag();
+          this.updateAfterDrag();
         }
         this.clearDrag();
+      }
     }
 
     onMouseMove(e) {
+      if (this.config.draggable) {
         e.preventDefault();
         if (this.pointerDown) {
-            this.drag.end = e.pageX;
-            this.setStyle(this.sliderFrame, {
-                cursor: '-webkit-grabbing',
-                webkitTransition: `all 0ms ${this.config.easing}`,
-                transition: `all 0ms ${this.config.easing}`,
-                [transformProperty]: `translate3d(${(this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1}px, 0, 0)`
-            });
+          this.drag.end = e.pageX;
+          this.setStyle(this.sliderFrame, {
+            cursor: '-webkit-grabbing',
+            webkitTransition: `all 0ms ${this.config.easing}`,
+            transition: `all 0ms ${this.config.easing}`,
+            [transformProperty]: `translate3d(${(this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1}px, 0, 0)`
+          });
         }
+      }
     }
 
     onMouseLeave(e) {
+      if (this.config.draggable) {
         if (this.pointerDown) {
-            this.pointerDown = false;
-            this.drag.end = e.pageX;
-            this.setStyle(this.sliderFrame, {
-                cursor: '-webkit-grab',
-                webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
-                transition: `all ${this.config.duration}ms ${this.config.easing}`
-            });
-            this.updateAfterDrag();
-            this.clearDrag();
+          this.pointerDown = false;
+          this.drag.end = e.pageX;
+          this.setStyle(this.sliderFrame, {
+            cursor: '-webkit-grab',
+            webkitTransition: `all ${this.config.duration}ms ${this.config.easing}`,
+            transition: `all ${this.config.duration}ms ${this.config.easing}`
+          });
+          this.updateAfterDrag();
+          this.clearDrag();
         }
+      }
     }
 
     render() {

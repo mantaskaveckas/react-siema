@@ -213,86 +213,99 @@ var ReactSiema = function (_Component) {
     }, {
         key: 'onTouchStart',
         value: function onTouchStart(e) {
-            e.stopPropagation();
-            this.pointerDown = true;
-            this.drag.start = e.touches[0].pageX;
+            if (this.config.draggable) {
+                e.stopPropagation();
+                this.pointerDown = true;
+                this.drag.start = e.touches[0].pageX;
+            }
         }
     }, {
         key: 'onTouchEnd',
         value: function onTouchEnd(e) {
-            e.stopPropagation();
-            this.pointerDown = false;
-            this.setStyle(this.sliderFrame, {
-                webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
-                transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
-            });
-            if (this.drag.end) {
-                this.updateAfterDrag();
+            if (this.config.draggable) {
+                e.stopPropagation();
+                this.pointerDown = false;
+                this.setStyle(this.sliderFrame, {
+                    webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
+                    transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
+                });
+                if (this.drag.end) {
+                    this.updateAfterDrag();
+                }
+                this.clearDrag();
             }
-            this.clearDrag();
         }
     }, {
         key: 'onTouchMove',
         value: function onTouchMove(e) {
-            e.stopPropagation();
-            if (this.pointerDown) {
-                this.drag.end = e.touches[0].pageX;
-
-                this.setStyle(this.sliderFrame, _defineProperty({
-                    webkitTransition: 'all 0ms ' + this.config.easing,
-                    transition: 'all 0ms ' + this.config.easing
-                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
+            if (this.config.draggable) {
+                e.stopPropagation();
+                if (this.pointerDown) {
+                    this.drag.end = e.touches[0].pageX;
+                    this.setStyle(this.sliderFrame, _defineProperty({
+                        webkitTransition: 'all 0ms ' + this.config.easing,
+                        transition: 'all 0ms ' + this.config.easing
+                    }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
+                }
             }
         }
     }, {
         key: 'onMouseDown',
         value: function onMouseDown(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.pointerDown = true;
-            this.drag.start = e.pageX;
+            if (this.config.draggable) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.pointerDown = true;
+                this.drag.start = e.pageX;
+            }
         }
     }, {
         key: 'onMouseUp',
         value: function onMouseUp(e) {
-            e.stopPropagation();
-            this.pointerDown = false;
-            this.setStyle(this.sliderFrame, {
-                cursor: '-webkit-grab',
-                webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
-                transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
-            });
-            if (this.drag.end) {
-                this.updateAfterDrag();
-            }
-            this.clearDrag();
-        }
-    }, {
-        key: 'onMouseMove',
-        value: function onMouseMove(e) {
-            e.preventDefault();
-            if (this.pointerDown) {
-                this.drag.end = e.pageX;
-                this.setStyle(this.sliderFrame, _defineProperty({
-                    cursor: '-webkit-grabbing',
-                    webkitTransition: 'all 0ms ' + this.config.easing,
-                    transition: 'all 0ms ' + this.config.easing
-                }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
-            }
-        }
-    }, {
-        key: 'onMouseLeave',
-        value: function onMouseLeave(e) {
-            if (this.pointerDown) {
+            if (this.config.draggable) {
+                e.stopPropagation();
                 this.pointerDown = false;
-                this.drag.end = e.pageX;
                 this.setStyle(this.sliderFrame, {
                     cursor: '-webkit-grab',
                     webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
                     transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
                 });
-                this.updateAfterDrag();
+                if (this.drag.end) {
+                    this.updateAfterDrag();
+                }
                 this.clearDrag();
+            }
+        }
+    }, {
+        key: 'onMouseMove',
+        value: function onMouseMove(e) {
+            if (this.config.draggable) {
+                e.preventDefault();
+                if (this.pointerDown) {
+                    this.drag.end = e.pageX;
+                    this.setStyle(this.sliderFrame, _defineProperty({
+                        cursor: '-webkit-grabbing',
+                        webkitTransition: 'all 0ms ' + this.config.easing,
+                        transition: 'all 0ms ' + this.config.easing
+                    }, _transformProperty2.default, 'translate3d(' + (this.currentSlide * (this.selectorWidth / this.perPage) + (this.drag.start - this.drag.end)) * -1 + 'px, 0, 0)'));
+                }
+            }
+        }
+    }, {
+        key: 'onMouseLeave',
+        value: function onMouseLeave(e) {
+            if (this.config.draggable) {
+                if (this.pointerDown) {
+                    this.pointerDown = false;
+                    this.drag.end = e.pageX;
+                    this.setStyle(this.sliderFrame, {
+                        cursor: '-webkit-grab',
+                        webkitTransition: 'all ' + this.config.duration + 'ms ' + this.config.easing,
+                        transition: 'all ' + this.config.duration + 'ms ' + this.config.easing
+                    });
+                    this.updateAfterDrag();
+                    this.clearDrag();
+                }
             }
         }
     }, {
