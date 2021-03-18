@@ -1,4 +1,4 @@
 {
-    "plugins": ["babel"],
+    "plugins": [],
     "parser": "babel-eslint"
 }
